@@ -29,7 +29,7 @@ sudo python3 api_server.py
 sudo ./start_server.sh
 ```
 
-服务器将在 `http://0.0.0.0:8000` 启动。
+服务器将在 `http://0.0.0.0:12389` 启动。
 
 ## 4. 启动前端
 

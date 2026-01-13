@@ -54,7 +54,7 @@ sudo apt-get install bluez python3-dbus
 sudo python3 api_server.py
 ```
 
-服务器将在 `http://0.0.0.0:8000` 启动。
+服务器将在 `http://0.0.0.0:12389` 启动。
 
 ### 前端
 
@@ -139,7 +139,7 @@ npm run build
 后端使用 FastAPI，支持自动重载（需要安装 `uvicorn[standard]`）：
 
 ```bash
-uvicorn api_server:app --reload --host 0.0.0.0 --port 8000
+uvicorn api_server:app --reload --host 0.0.0.0 --port 12389
 ```
 
 ### 前端开发
@@ -154,3 +154,6 @@ npm run dev
 
 查看 LICENSE 文件了解详情。
 
+
+
+apt install libdbus-1-dev python3-dev gcc libglib2.0-dev
