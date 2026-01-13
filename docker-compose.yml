@@ -5,7 +5,6 @@ services:
     ports:
       - "5680:80"
     volumes:
-      - ./amiibo:/amiibo
-    privileged: true
+      - ./www:/www
     restart: always
 
