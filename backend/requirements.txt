@@ -5,5 +5,3 @@ crc8>=0.2.1
 hid>=1.0.8
 aioconsole>=0.8.2
 dbus-python>=1.4.0
-
-

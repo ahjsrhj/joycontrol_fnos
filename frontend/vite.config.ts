@@ -5,13 +5,13 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   build: {
-    outDir: '../app.joycontrol/app/www',
+    outDir: './dist',
     emptyOutDir: true,
   },
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:12389',
+        target: 'http://localhost:80',
         changeOrigin: true,
       },
     },
