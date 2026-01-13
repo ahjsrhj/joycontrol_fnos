@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <PairingView v-if="!status.connected" ref="pairingView" />
+    <PairingView v-if="!status.connected" />
     <ControllerView v-else />
   </div>
 </template>
@@ -16,8 +16,6 @@ const status = ref<Status>({
   connected: false,
   pairing: false,
 })
-
-const pairingView = ref<InstanceType<typeof PairingView> | null>(null)
 
 let statusInterval: number | null = null
 

@@ -255,8 +255,8 @@ const handleStickStart = (stick: 'l' | 'r', event: MouseEvent | TouchEvent) => {
 
   const handleMove = (e: MouseEvent | TouchEvent) => {
     e.preventDefault()
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
+    const clientX = 'touches' in e && e.touches.length > 0 ? e.touches[0]!.clientX : (e as MouseEvent).clientX
+    const clientY = 'touches' in e && e.touches.length > 0 ? e.touches[0]!.clientY : (e as MouseEvent).clientY
     
     const deltaX = clientX - centerX
     const deltaY = centerY - clientY

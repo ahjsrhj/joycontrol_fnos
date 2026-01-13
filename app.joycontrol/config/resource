@@ -1,0 +1,28 @@
+{
+    "data-share":
+    {
+        "shares":
+        [
+            {
+                "name": "app.joycontrol",
+                "permission":
+                {
+                    "rw":
+                    [
+                        "app.joycontrol"
+                    ]
+                }
+            },
+            {
+                "name": "app.joycontrol/data",
+                "permission":
+                {
+                    "rw":
+                    [
+                        "app.joycontrol"
+                    ]
+                }
+            }
+        ]
+    }
+}

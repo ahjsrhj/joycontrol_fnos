@@ -180,6 +180,12 @@ async def startup():
     log.configure(console_level=logging.INFO)
 
 
+@app.get("/api/health")
+async def health_check():
+    """健康检查接口"""
+    return {"status": "ok"}
+
+
 @app.get("/api/status")
 async def get_status():
     """获取状态"""
