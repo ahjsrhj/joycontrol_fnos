@@ -30,4 +30,4 @@ WORKDIR /backend
 EXPOSE 80
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["python3", "./api_server.py"]
