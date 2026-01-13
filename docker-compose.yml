@@ -1,0 +1,11 @@
+services:
+  joycontrol:
+    image: joycontrol
+    container_name: joycontrol
+    ports:
+      - "5680:80"
+    volumes:
+      - ./amiibo:/amiibo
+    privileged: true
+    restart: always
+

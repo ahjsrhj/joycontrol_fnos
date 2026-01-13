@@ -1,10 +1,7 @@
 #!/bin/bash
 set -e
 
-# 启动 dbus
 service dbus start
-
-# 启动 bluetoothd
 echo "Starting bluetoothd"
 bluetoothd --noplugin=input > /var/log/bluetoothd.log 2>&1 &
 echo "Bluetoothd started"
