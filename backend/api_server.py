@@ -44,7 +44,8 @@ is_connected = False
 is_pairing = False
 paired_switch_address: Optional[str] = None
 CONFIG_FILE = Path.home() / ".joycontrol_config.json"
-AMIIBO_DIR = Path.home() / "amiibo"  # 默认 amiibo 目录
+# 优先使用环境变量指定的目录，否则使用 /amiibo（Docker 环境）或 ~/amiibo（本地环境）
+AMIIBO_DIR = Path(os.getenv("AMIIBO_DIR", "/amiibo"))
 
 
 # Pydantic models

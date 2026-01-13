@@ -22,6 +22,10 @@ RUN rm -f /etc/nginx/sites-enabled/default \
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# 创建 amiibo 目录并设置为数据卷
+RUN mkdir -p /amiibo
+VOLUME ["/amiibo"]
+
 WORKDIR /backend
 EXPOSE 80
 
