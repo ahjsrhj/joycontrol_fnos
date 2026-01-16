@@ -1,18 +1,20 @@
 services:
-  backend:
-    image: joycontrol-backend
-    container_name: joycontrol-backend
-    privileged: true
-    network_mode: host
-    restart: always
-    volumes:
-      - ./amiibo:/amiibo
+  # backend:
+  #   image: joycontrol-backend
+  #   container_name: joycontrol-backend
+  #   privileged: true
+  #   network_mode: host
+  #   restart: always
+  #   volumes:
+  #     - ./amiibo:/amiibo
 
   frontend:
     image: joycontrol-frontend
     container_name: joycontrol-frontend
     ports:
       - "5680:80"
-    depends_on:
-      - backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # depends_on:
+    #   - backend
     restart: always
