@@ -8,7 +8,7 @@ cd ../docker
 
 
 # 构建前端镜像
-docker build -t joycontrol-frontend -f Dockerfile.frontend .
+docker build -t joycontrol-frontend -f docker/Dockerfile.frontend ..
 
 # 构建后端镜像
-docker build -t joycontrol-backend -f Dockerfile.backend .
+docker build -t joycontrol-backend -f docker/Dockerfile.backend ..

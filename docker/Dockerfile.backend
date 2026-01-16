@@ -5,10 +5,10 @@ RUN apt update \
 
 RUN pip3 install hid aioconsole crc8 dbus-python fastapi uvicorn pydantic
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-COPY ../backend /backend
+COPY backend /backend
 
 WORKDIR /backend
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
