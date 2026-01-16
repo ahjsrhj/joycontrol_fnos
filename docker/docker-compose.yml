@@ -16,9 +16,3 @@ services:
     depends_on:
       - backend
     restart: always
-    networks:
-      - joycontrol-network
-
-networks:
-  joycontrol-network:
-    driver: bridge
