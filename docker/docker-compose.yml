@@ -3,13 +3,10 @@ services:
     image: joycontrol-backend
     container_name: joycontrol-backend
     privileged: true
+    network_mode: host
     restart: always
     volumes:
       - ./amiibo:/amiibo
-    networks:
-      - joycontrol-network
-    expose:
-      - "13821"
 
   frontend:
     image: joycontrol-frontend
