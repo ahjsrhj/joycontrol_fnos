@@ -1,0 +1,27 @@
+services:
+  backend:
+    image: joycontrol-backend
+    container_name: joycontrol-backend
+    privileged: true
+    restart: always
+    volumes:
+      - ./amiibo:/amiibo
+    networks:
+      - joycontrol-network
+    expose:
+      - "13821"
+
+  frontend:
+    image: joycontrol-frontend
+    container_name: joycontrol-frontend
+    ports:
+      - "5680:80"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - joycontrol-network
+
+networks:
+  joycontrol-network:
+    driver: bridge
