@@ -15,7 +15,7 @@ from pydantic import BaseModel
 
 import joycontrol.logging_default as log
 from joycontrol.controller import Controller
-from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
+from joycontrol.controller_state import ControllerState, button_push
 from joycontrol.memory import FlashMemory
 from joycontrol.protocol import controller_protocol_factory
 from joycontrol.server import create_hid_server
@@ -266,6 +266,17 @@ async def disconnect():
     return {"success": True, "message": "Disconnected"}
 
 
+def ensure_valid_button(controller_state, *buttons):
+    """
+    Raise ValueError if any of the given buttons is not part of the controller state.
+    :param controller_state:
+    :param buttons: Any number of buttons to check (see ButtonState.get_available_buttons)
+    """
+    for button in buttons:
+        if button not in controller_state.button_state.get_available_buttons():
+            raise ValueError(f'Button {button} does not exist on {controller_state.get_controller()}')
+
+
 @app.post("/api/button/click")
 async def click_button(request: ButtonPressRequest):
     """点击按钮（按下后立即释放，使用 button_push 实现）"""
@@ -273,10 +284,18 @@ async def click_button(request: ButtonPressRequest):
     if not is_connected or not controller_state:
         raise HTTPException(status_code=400, detail="Controller not connected")
     
+    if not request.buttons:
+        raise HTTPException(status_code=400, detail="Buttons list is empty")
+    
     try:
-        # 使用 button_push 实现点击（按下 -> 等待 0.1 秒 -> 释放）
+        # 参考 run_controller_cli.py 中的 click 命令实现
+        await controller_state.connect()
+        ensure_valid_button(controller_state, *request.buttons)
         await button_push(controller_state, *request.buttons)
         return {"success": True}
+    except ValueError as e:
+        logger.error(f"Invalid button: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.error(f"Error clicking button: {e}")
         raise HTTPException(status_code=500, detail=str(e))
