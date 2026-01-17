@@ -7,25 +7,35 @@
       </div>
       <div class="dialog-content">
         <div v-if="loading" class="loading">加载中...</div>
-        <div v-else-if="files.length === 0" class="empty">
-          <p>未找到 Amiibo 文件</p>
-          <p class="hint">请将 .bin 文件放置在 ~/amiibo 目录下</p>
-        </div>
-        <div v-else class="file-list">
-          <div
-            v-for="file in files"
-            :key="file.path"
-            class="file-item"
-            :class="{ selected: selectedFile?.path === file.path }"
-            @click="selectedFile = file"
-          >
-            <div class="file-info">
-              <div class="file-name">{{ file.name }}</div>
-              <div class="file-path">{{ file.relative_path }}</div>
-              <div class="file-size">{{ formatSize(file.size) }}</div>
+        <template v-else>
+          <div v-if="files.length > 0" class="filter-section">
+            <input
+              v-model="filterText"
+              type="text"
+              placeholder="输入文件名或路径进行筛选..."
+              class="filter-input"
+            />
+          </div>
+          <div v-if="filteredFiles.length === 0" class="empty">
+            <p>{{ filterText ? '未找到匹配的文件' : '未找到 Amiibo 文件' }}</p>
+            <p v-if="!filterText" class="hint">请将 .bin 文件放置在 ~/amiibo 目录下</p>
+          </div>
+          <div v-else class="file-list">
+            <div
+              v-for="file in filteredFiles"
+              :key="file.path"
+              class="file-item"
+              :class="{ selected: selectedFile?.path === file.path }"
+              @click="selectedFile = file"
+            >
+              <div class="file-info">
+                <div class="file-name">{{ file.name }}</div>
+                <div class="file-path">{{ file.relative_path }}</div>
+                <div class="file-size">{{ formatSize(file.size) }}</div>
+              </div>
             </div>
           </div>
-        </div>
+        </template>
       </div>
       <div class="dialog-footer">
         <button @click="handleClose" class="btn btn-secondary">取消</button>
@@ -42,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { apiService, type AmiiboFile } from '../api'
 
 const emit = defineEmits<{
@@ -53,6 +63,27 @@ const emit = defineEmits<{
 const files = ref<AmiiboFile[]>([])
 const selectedFile = ref<AmiiboFile | null>(null)
 const loading = ref(true)
+const filterText = ref('')
+
+const filteredFiles = computed(() => {
+  if (!filterText.value.trim()) {
+    return files.value
+  }
+  const filter = filterText.value.toLowerCase().trim()
+  return files.value.filter(file => {
+    return (
+      file.name.toLowerCase().includes(filter) ||
+      file.relative_path.toLowerCase().includes(filter)
+    )
+  })
+})
+
+// 当筛选文本改变时，如果当前选中的文件不在过滤后的列表中，则清除选择
+watch(filteredFiles, (newFiles) => {
+  if (selectedFile.value && !newFiles.find(f => f.path === selectedFile.value!.path)) {
+    selectedFile.value = null
+  }
+})
 
 const formatSize = (bytes: number): string => {
   if (bytes < 1024) return bytes + ' B'
@@ -162,6 +193,25 @@ onMounted(() => {
   font-size: 0.875rem;
   color: #999;
   margin-top: 0.5rem;
+}
+
+.filter-section {
+  margin-bottom: 1rem;
+}
+
+.filter-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
 .file-list {

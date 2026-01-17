@@ -313,7 +313,9 @@ onUnmounted(() => {
   border: 3px solid rgba(255, 255, 255, 0.3);
   position: relative;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s;
+  user-select: none;
+  touch-action: none;
 }
 
 .stick.active {
@@ -330,6 +332,8 @@ onUnmounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  user-select: none;
 }
 
 .left-buttons {

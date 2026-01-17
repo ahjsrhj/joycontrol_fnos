@@ -308,18 +308,29 @@ async def set_stick(request: StickRequest):
         raise HTTPException(status_code=400, detail="Controller not connected")
     
     try:
+        # 将前端发送的 x, y 值 (-32768 到 32767) 转换为 StickState 期望的范围 (0 到 4095)
+        # 公式: (value + 32768) * 4095 / 65535
+        def convert_to_stick_value(value):
+            # 限制在有效范围内
+            value = max(-32768, min(32767, value))
+            # 转换为 0-4095 范围
+            stick_value = int((value + 32768) * 4095 / 65535)
+            # 确保在有效范围内
+            return max(0, min(4095, stick_value))
+        
+        h_value = convert_to_stick_value(request.x)
+        v_value = convert_to_stick_value(request.y)
+        
         if request.stick == 'l':
             if not controller_state.l_stick_state:
                 raise HTTPException(status_code=400, detail="Left stick not available")
-            controller_state.l_stick_state.set_center()
-            controller_state.l_stick_state.set_x(request.x)
-            controller_state.l_stick_state.set_y(request.y)
+            controller_state.l_stick_state.set_h(h_value)
+            controller_state.l_stick_state.set_v(v_value)
         elif request.stick == 'r':
             if not controller_state.r_stick_state:
                 raise HTTPException(status_code=400, detail="Right stick not available")
-            controller_state.r_stick_state.set_center()
-            controller_state.r_stick_state.set_x(request.x)
-            controller_state.r_stick_state.set_y(request.y)
+            controller_state.r_stick_state.set_h(h_value)
+            controller_state.r_stick_state.set_v(v_value)
         else:
             raise HTTPException(status_code=400, detail="Invalid stick, use 'l' or 'r'")
         
