@@ -294,13 +294,15 @@ onUnmounted(() => {
 }
 
 .left-stick-area {
-  left: 80px;
-  top: 140px;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .right-stick-area {
-  right: 80px;
-  top: 140px;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .stick {
@@ -332,12 +334,14 @@ onUnmounted(() => {
 
 .left-buttons {
   position: absolute;
-  left: 220px;
-  top: 140px;
+  left: 180px;
+  top: 50%;
+  transform: translateY(-50%);
   display: grid;
   grid-template-columns: repeat(3, 50px);
   grid-template-rows: repeat(3, 50px);
   gap: 5px;
+  place-items: center;
 }
 
 .dpad-up {
@@ -363,7 +367,7 @@ onUnmounted(() => {
 .center-buttons {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 75%;
   transform: translate(-50%, -50%);
   display: flex;
   gap: 10px;
@@ -372,18 +376,14 @@ onUnmounted(() => {
 
 .right-buttons {
   position: absolute;
-  right: 220px;
-  top: 140px;
+  right: 180px;
+  top: 50%;
+  transform: translateY(-50%);
   display: grid;
-  grid-template-columns: repeat(2, 60px);
-  grid-template-rows: repeat(2, 60px);
-  gap: 10px;
-}
-
-.btn-y {
-  grid-column: 1;
-  grid-row: 1;
-  background: #ff6b6b;
+  grid-template-columns: repeat(3, 50px);
+  grid-template-rows: repeat(3, 50px);
+  gap: 5px;
+  place-items: center;
 }
 
 .btn-x {
@@ -392,25 +392,32 @@ onUnmounted(() => {
   background: #4ecdc4;
 }
 
-.btn-b {
-  grid-column: 1;
+.btn-a {
+  grid-column: 3;
   grid-row: 2;
+  background: #ff6b6b;
+}
+
+.btn-b {
+  grid-column: 2;
+  grid-row: 3;
   background: #ffe66d;
 }
 
-.btn-a {
-  grid-column: 2;
+.btn-y {
+  grid-column: 1;
   grid-row: 2;
   background: #95e1d3;
 }
 
 .shoulder-buttons {
   position: absolute;
-  top: 20px;
+  top: 30px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 20px;
+  align-items: center;
 }
 
 .btn-controller {
