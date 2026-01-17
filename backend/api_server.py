@@ -266,47 +266,15 @@ async def disconnect():
     return {"success": True, "message": "Disconnected"}
 
 
-@app.post("/api/button/press")
-async def press_button(request: ButtonPressRequest):
-    """按下按钮"""
-    logger.info(f"Received press button request: buttons={request.buttons}")
-    if not is_connected or not controller_state:
-        raise HTTPException(status_code=400, detail="Controller not connected")
-    
-    try:
-        # 确保控制器已连接（参考 run_controller_cli.py）
-        await controller_state.connect()
-        await button_press(controller_state, *request.buttons)
-        return {"success": True}
-    except Exception as e:
-        logger.error(f"Error pressing button: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/api/button/release")
-async def release_button(request: ButtonReleaseRequest):
-    """释放按钮"""
-    logger.info(f"Received release button request: buttons={request.buttons}")
-    if not is_connected or not controller_state:
-        raise HTTPException(status_code=400, detail="Controller not connected")
-    
-    try:
-        # 确保控制器已连接（参考 run_controller_cli.py）
-        await controller_state.connect()
-        await button_release(controller_state, *request.buttons)
-        return {"success": True}
-    except Exception as e:
-        logger.error(f"Error releasing button: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.post("/api/button/click")
 async def click_button(request: ButtonPressRequest):
-    """点击按钮（按下后立即释放）"""
+    """点击按钮（按下后立即释放，使用 button_push 实现）"""
+    logger.info(f"Received click button request: buttons={request.buttons}")
     if not is_connected or not controller_state:
         raise HTTPException(status_code=400, detail="Controller not connected")
     
     try:
+        # 使用 button_push 实现点击（按下 -> 等待 0.1 秒 -> 释放）
         await button_push(controller_state, *request.buttons)
         return {"success": True}
     except Exception as e:

@@ -24,35 +24,19 @@
       <div class="left-buttons">
         <button 
           class="btn-controller dpad-up"
-          @mousedown="handleButtonDown('up')"
-          @mouseup="handleButtonUp('up')"
-          @mouseleave="handleButtonUp('up')"
-          @touchstart="handleButtonDown('up')"
-          @touchend="handleButtonUp('up')"
+          @click="handleButtonClick('up')"
         ></button>
         <button 
           class="btn-controller dpad-down"
-          @mousedown="handleButtonDown('down')"
-          @mouseup="handleButtonUp('down')"
-          @mouseleave="handleButtonUp('down')"
-          @touchstart="handleButtonDown('down')"
-          @touchend="handleButtonUp('down')"
+          @click="handleButtonClick('down')"
         ></button>
         <button 
           class="btn-controller dpad-left"
-          @mousedown="handleButtonDown('left')"
-          @mouseup="handleButtonUp('left')"
-          @mouseleave="handleButtonUp('left')"
-          @touchstart="handleButtonDown('left')"
-          @touchend="handleButtonUp('left')"
+          @click="handleButtonClick('left')"
         ></button>
         <button 
           class="btn-controller dpad-right"
-          @mousedown="handleButtonDown('right')"
-          @mouseup="handleButtonUp('right')"
-          @mouseleave="handleButtonUp('right')"
-          @touchstart="handleButtonDown('right')"
-          @touchend="handleButtonUp('right')"
+          @click="handleButtonClick('right')"
         ></button>
       </div>
 
@@ -60,35 +44,19 @@
       <div class="center-buttons">
         <button 
           class="btn-controller btn-minus"
-          @mousedown="handleButtonDown('minus')"
-          @mouseup="handleButtonUp('minus')"
-          @mouseleave="handleButtonUp('minus')"
-          @touchstart="handleButtonDown('minus')"
-          @touchend="handleButtonUp('minus')"
+          @click="handleButtonClick('minus')"
         >-</button>
         <button 
           class="btn-controller btn-capture"
-          @mousedown="handleButtonDown('capture')"
-          @mouseup="handleButtonUp('capture')"
-          @mouseleave="handleButtonUp('capture')"
-          @touchstart="handleButtonDown('capture')"
-          @touchend="handleButtonUp('capture')"
+          @click="handleButtonClick('capture')"
         >📷</button>
         <button 
           class="btn-controller btn-home"
-          @mousedown="handleButtonDown('home')"
-          @mouseup="handleButtonUp('home')"
-          @mouseleave="handleButtonUp('home')"
-          @touchstart="handleButtonDown('home')"
-          @touchend="handleButtonUp('home')"
+          @click="handleButtonClick('home')"
         >🏠</button>
         <button 
           class="btn-controller btn-plus"
-          @mousedown="handleButtonDown('plus')"
-          @mouseup="handleButtonUp('plus')"
-          @mouseleave="handleButtonUp('plus')"
-          @touchstart="handleButtonDown('plus')"
-          @touchend="handleButtonUp('plus')"
+          @click="handleButtonClick('plus')"
         >+</button>
       </div>
 
@@ -96,35 +64,19 @@
       <div class="right-buttons">
         <button 
           class="btn-controller btn-y"
-          @mousedown="handleButtonDown('y')"
-          @mouseup="handleButtonUp('y')"
-          @mouseleave="handleButtonUp('y')"
-          @touchstart="handleButtonDown('y')"
-          @touchend="handleButtonUp('y')"
+          @click="handleButtonClick('y')"
         >Y</button>
         <button 
           class="btn-controller btn-x"
-          @mousedown="handleButtonDown('x')"
-          @mouseup="handleButtonUp('x')"
-          @mouseleave="handleButtonUp('x')"
-          @touchstart="handleButtonDown('x')"
-          @touchend="handleButtonUp('x')"
+          @click="handleButtonClick('x')"
         >X</button>
         <button 
           class="btn-controller btn-b"
-          @mousedown="handleButtonDown('b')"
-          @mouseup="handleButtonUp('b')"
-          @mouseleave="handleButtonUp('b')"
-          @touchstart="handleButtonDown('b')"
-          @touchend="handleButtonUp('b')"
+          @click="handleButtonClick('b')"
         >B</button>
         <button 
           class="btn-controller btn-a"
-          @mousedown="handleButtonDown('a')"
-          @mouseup="handleButtonUp('a')"
-          @mouseleave="handleButtonUp('a')"
-          @touchstart="handleButtonDown('a')"
-          @touchend="handleButtonUp('a')"
+          @click="handleButtonClick('a')"
         >A</button>
       </div>
 
@@ -144,35 +96,19 @@
       <div class="shoulder-buttons">
         <button 
           class="btn-controller btn-l"
-          @mousedown="handleButtonDown('l')"
-          @mouseup="handleButtonUp('l')"
-          @mouseleave="handleButtonUp('l')"
-          @touchstart="handleButtonDown('l')"
-          @touchend="handleButtonUp('l')"
+          @click="handleButtonClick('l')"
         >L</button>
         <button 
           class="btn-controller btn-zl"
-          @mousedown="handleButtonDown('zl')"
-          @mouseup="handleButtonUp('zl')"
-          @mouseleave="handleButtonUp('zl')"
-          @touchstart="handleButtonDown('zl')"
-          @touchend="handleButtonUp('zl')"
+          @click="handleButtonClick('zl')"
         >ZL</button>
         <button 
           class="btn-controller btn-r"
-          @mousedown="handleButtonDown('r')"
-          @mouseup="handleButtonUp('r')"
-          @mouseleave="handleButtonUp('r')"
-          @touchstart="handleButtonDown('r')"
-          @touchend="handleButtonUp('r')"
+          @click="handleButtonClick('r')"
         >R</button>
         <button 
           class="btn-controller btn-zr"
-          @mousedown="handleButtonDown('zr')"
-          @mouseup="handleButtonUp('zr')"
-          @mouseleave="handleButtonUp('zr')"
-          @touchstart="handleButtonDown('zr')"
-          @touchend="handleButtonUp('zr')"
+          @click="handleButtonClick('zr')"
         >ZR</button>
       </div>
     </div>
@@ -205,8 +141,6 @@ const nfcStatus = ref<NFCStatus>({ loaded: false })
 const leftStickActive = ref(false)
 const rightStickActive = ref(false)
 
-const pressedButtons = new Set<string>()
-
 let nfcStatusInterval: number | null = null
 
 const updateNFCStatus = async () => {
@@ -217,24 +151,11 @@ const updateNFCStatus = async () => {
   }
 }
 
-const handleButtonDown = async (button: string) => {
-  if (pressedButtons.has(button)) return
-  pressedButtons.add(button)
+const handleButtonClick = async (button: string) => {
   try {
-    await apiService.pressButton([button])
+    await apiService.clickButton([button])
   } catch (error) {
-    console.error(`Failed to press button ${button}:`, error)
-    pressedButtons.delete(button)
-  }
-}
-
-const handleButtonUp = async (button: string) => {
-  if (!pressedButtons.has(button)) return
-  pressedButtons.delete(button)
-  try {
-    await apiService.releaseButton([button])
-  } catch (error) {
-    console.error(`Failed to release button ${button}:`, error)
+    console.error(`Failed to click button ${button}:`, error)
   }
 }
 
@@ -337,10 +258,6 @@ onUnmounted(() => {
   if (nfcStatusInterval) {
     clearInterval(nfcStatusInterval)
   }
-  // 释放所有按下的按钮
-  pressedButtons.forEach(button => {
-    apiService.releaseButton([button]).catch(console.error)
-  })
 })
 </script>
 
