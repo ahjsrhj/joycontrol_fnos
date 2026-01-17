@@ -269,6 +269,7 @@ async def disconnect():
 @app.post("/api/button/press")
 async def press_button(request: ButtonPressRequest):
     """按下按钮"""
+    logger.info(f"Received press button request: buttons={request.buttons}")
     if not is_connected or not controller_state:
         raise HTTPException(status_code=400, detail="Controller not connected")
     
@@ -283,6 +284,7 @@ async def press_button(request: ButtonPressRequest):
 @app.post("/api/button/release")
 async def release_button(request: ButtonReleaseRequest):
     """释放按钮"""
+    logger.info(f"Received release button request: buttons={request.buttons}")
     if not is_connected or not controller_state:
         raise HTTPException(status_code=400, detail="Controller not connected")
     
