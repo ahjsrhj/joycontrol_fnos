@@ -274,6 +274,8 @@ async def press_button(request: ButtonPressRequest):
         raise HTTPException(status_code=400, detail="Controller not connected")
     
     try:
+        # 确保控制器已连接（参考 run_controller_cli.py）
+        await controller_state.connect()
         await button_press(controller_state, *request.buttons)
         return {"success": True}
     except Exception as e:
@@ -289,6 +291,8 @@ async def release_button(request: ButtonReleaseRequest):
         raise HTTPException(status_code=400, detail="Controller not connected")
     
     try:
+        # 确保控制器已连接（参考 run_controller_cli.py）
+        await controller_state.connect()
         await button_release(controller_state, *request.buttons)
         return {"success": True}
     except Exception as e:
