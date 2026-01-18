@@ -16,7 +16,10 @@
           @mousedown="handleStickStart('l', $event)"
           @touchstart="handleStickStart('l', $event)"
         >
-          <div class="stick-cap"></div>
+          <div 
+            class="stick-cap" 
+            :style="{ transform: `translate(calc(-50% + ${leftStickPosition.x}px), calc(-50% + ${leftStickPosition.y}px))` }"
+          ></div>
         </div>
       </div>
 
@@ -88,7 +91,10 @@
           @mousedown="handleStickStart('r', $event)"
           @touchstart="handleStickStart('r', $event)"
         >
-          <div class="stick-cap"></div>
+          <div 
+            class="stick-cap" 
+            :style="{ transform: `translate(calc(-50% + ${rightStickPosition.x}px), calc(-50% + ${rightStickPosition.y}px))` }"
+          ></div>
         </div>
       </div>
 
@@ -140,8 +146,30 @@ const showNFCDialog = ref(false)
 const nfcStatus = ref<NFCStatus>({ loaded: false })
 const leftStickActive = ref(false)
 const rightStickActive = ref(false)
+const leftStickPosition = ref({ x: 0, y: 0 })
+const rightStickPosition = ref({ x: 0, y: 0 })
 
 let nfcStatusInterval: number | null = null
+
+// 摇杆限流：每秒5次
+const STICK_RATE_LIMIT_PER_SECOND = 5
+const STICK_RATE_LIMIT_WINDOW = 1000 // 1秒（毫秒）
+const stickRequestTimes: number[] = []
+
+const canMakeStickRequest = (): boolean => {
+  const now = Date.now()
+  // 清理1秒前的请求记录
+  while (stickRequestTimes.length > 0 && now - stickRequestTimes[0]! >= STICK_RATE_LIMIT_WINDOW) {
+    stickRequestTimes.shift()
+  }
+  // 检查是否超过限制
+  if (stickRequestTimes.length >= STICK_RATE_LIMIT_PER_SECOND) {
+    return false
+  }
+  // 记录当前请求时间
+  stickRequestTimes.push(now)
+  return true
+}
 
 const updateNFCStatus = async () => {
   try {
@@ -180,7 +208,7 @@ const handleStickStart = (stick: 'l' | 'r', event: MouseEvent | TouchEvent) => {
     const clientY = 'touches' in e && e.touches.length > 0 ? e.touches[0]!.clientY : (e as MouseEvent).clientY
     
     const deltaX = clientX - centerX
-    const deltaY = centerY - clientY
+    const deltaY = clientY - centerY  // 修复：往下拖动应该是正数
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
     
     // 限制在圆形范围内
@@ -189,18 +217,31 @@ const handleStickStart = (stick: 'l' | 'r', event: MouseEvent | TouchEvent) => {
     const clampedX = Math.cos(angle) * clampedDistance
     const clampedY = Math.sin(angle) * clampedDistance
     
-    // 转换为 -32768 到 32767 的范围
-    const x = Math.round((clampedX / maxRadius) * 32767)
-    const y = Math.round((clampedY / maxRadius) * 32767)
+    // 更新视觉位置（stick-cap 的偏移）
+    if (isLeft) {
+      leftStickPosition.value = { x: clampedX, y: clampedY }
+    } else {
+      rightStickPosition.value = { x: clampedX, y: clampedY }
+    }
     
-    apiService.setStick(stick, x, y).catch(console.error)
+    // 转换为 -32768 到 32767 的范围
+    // Y 轴需要取反：因为视觉坐标往下是正数，但摇杆 API 往下是负数
+    const x = Math.round((clampedX / maxRadius) * 32767)
+    const y = -Math.round((clampedY / maxRadius) * 32767)
+    
+    // 限流：每秒最多5次 API 调用
+    if (canMakeStickRequest()) {
+      apiService.setStick(stick, x, y).catch(console.error)
+    }
   }
 
   const handleEnd = () => {
     if (isLeft) {
       leftStickActive.value = false
+      leftStickPosition.value = { x: 0, y: 0 }
     } else {
       rightStickActive.value = false
+      rightStickPosition.value = { x: 0, y: 0 }
     }
     apiService.setStick(stick, 0, 0).catch(console.error)
     document.removeEventListener('mousemove', handleMove)
@@ -334,6 +375,7 @@ onUnmounted(() => {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   pointer-events: none;
   user-select: none;
+  transition: transform 0.05s ease-out;
 }
 
 .left-buttons {
